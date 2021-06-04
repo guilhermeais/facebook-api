@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { User } from 'App/Models'
+import { UserKey } from 'App/Models'
 import { StoreValidator } from 'App/Validators/User/Register'
 import faker from 'faker'
 import Mail from '@ioc:Adonis/Addons/Mail'
@@ -16,7 +17,8 @@ export default class UserRegisterController {
     user.related('keys').create({key})
 
     const link  = `${redirectUrl.replace(/\/$/, '')}/${key}`
-
+    console.log(redirectUrl)
+    console.log(link)
     await Mail.send((message)=>{
       message.to(email) // já dizemos que o email será enviado para o email que o usuário colocou
       message.from('contato@facebook.com', 'Facebook')
@@ -25,7 +27,14 @@ export default class UserRegisterController {
     })
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({params}: HttpContextContract) {
+    const userKey = await UserKey.findByOrFail('key', params.key)
+    await userKey.load('user')
+    
+    return userKey.user.serialize({fields:{
+      omit:['remember_me_token']
+    }})
+  }
 
   public async update({}: HttpContextContract) {}
 }

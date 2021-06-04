@@ -1,6 +1,6 @@
 import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
-import {User} from 'App/Models'
-
+import { User } from 'App/Models'
+import { CherryPick } from '@ioc:Adonis/Lucid/Model'
 export default class UserKey extends BaseModel {
   @column({ isPrimary: true })
   public id: number
@@ -9,9 +9,9 @@ export default class UserKey extends BaseModel {
   public key: string
 
   @column()
-  public userId: string 
+  public userId: string
 
-  @belongsTo(()=> User)
+  @belongsTo(() => User)
   public user: BelongsTo<typeof User>
-
+  
 }

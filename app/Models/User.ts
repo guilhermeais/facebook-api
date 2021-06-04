@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
 import { UserKey } from 'App/Models'
 import { column, beforeSave, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
-
+import { CherryPick } from '@ioc:Adonis/Lucid/Model'
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number
@@ -22,10 +22,14 @@ export default class User extends BaseModel {
   @column()
   public rememberMeToken?: string
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serialize:(value:DateTime)=>{
+    return value.toFormat('dd/MM/yyyy HH:mm:ss')
+  } })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ autoCreate: true, autoUpdate: true, serialize:(value: DateTime)=>{
+    return value.toFormat('dd/MM/yyyy HH:mm:ss')
+  } })
   public updatedAt: DateTime
 
   @beforeSave()
@@ -35,6 +39,7 @@ export default class User extends BaseModel {
     }
   }
 
-  @hasMany(()=> UserKey)
+  @hasMany(() => UserKey)
   public keys: HasMany<typeof UserKey>
+
 }
