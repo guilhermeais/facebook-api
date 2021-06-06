@@ -1,0 +1,40 @@
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { User } from 'App/Models'
+import { UpdateValidator } from 'App/Validators/User/Main'
+
+export default class UsersController {
+  public async index({ request }: HttpContextContract) {
+    const queryString = request.qs().keyword
+    // console.log(queryString)
+
+    const user = User.query()
+      .orWhereRaw(`name like '%${queryString}%'`)
+      .orWhereRaw(`username like '%${queryString}%'`)
+      .orWhereRaw(`email like '%${queryString}%'`)
+
+    return user
+  }
+
+  public async show({ auth }: HttpContextContract) {
+    const user = auth.user!
+
+    await user.load('avatar')
+
+    return user.serialize({
+      fields: {
+        omit: ['rememberMeToken'],
+      },
+    })
+  }
+
+  public async update({ request, auth }: HttpContextContract) {
+    const data = await request.validate(UpdateValidator)
+    const user = auth.user!
+
+    user.merge(data)
+
+    await user.save()
+
+    return user
+  }
+}

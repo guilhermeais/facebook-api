@@ -39,7 +39,7 @@ export default class UserRegisterController {
 
     return userKey.user.serialize({
       fields: {
-        omit: ['remember_me_token'],
+        omit: ['rememberMeToken'],
       },
     })
   }
