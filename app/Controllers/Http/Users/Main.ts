@@ -4,13 +4,14 @@ import { UpdateValidator } from 'App/Validators/User/Main'
 
 export default class UsersController {
   public async index({ request }: HttpContextContract) {
-    const queryString = request.qs().keyword
-    // console.log(queryString)
-
-    const user = User.query()
-      .orWhereRaw(`name like '%${queryString}%'`)
-      .orWhereRaw(`username like '%${queryString}%'`)
-      .orWhereRaw(`email like '%${queryString}%'`)
+    const user = User.query().where((builder) => {
+      if (request.qs().keyword) {
+        builder
+          .where('name', 'LIKE', `%${String(request.qs().keyword) || ''}%`)
+          .orWhere('email', 'LIKE', `%${String(request.qs().keyword) || ''}%`)
+          .orWhere('username', 'LIKE', `%${String(request.qs().keyword) || ''}%`)
+      }
+    })
 
     return user
   }
