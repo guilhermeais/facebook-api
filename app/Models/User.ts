@@ -1,7 +1,15 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { UserKey, File } from 'App/Models'
-import { column, beforeSave, BaseModel, hasMany, HasMany, hasOne, HasOne } from '@ioc:Adonis/Lucid/Orm'
+import { UserKey, File, Post } from 'App/Models'
+import {
+  column,
+  beforeSave,
+  BaseModel,
+  hasMany,
+  HasMany,
+  hasOne,
+  HasOne,
+} from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -22,14 +30,21 @@ export default class User extends BaseModel {
   @column()
   public rememberMeToken?: string
 
-  @column.dateTime({ autoCreate: true, serialize:(value:DateTime)=>{
-    return value.toFormat('dd/MM/yyyy HH:mm:ss')
-  } })
+  @column.dateTime({
+    autoCreate: true,
+    serialize: (value: DateTime) => {
+      return value.toFormat('dd/MM/yyyy HH:mm:ss')
+    },
+  })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true, serialize:(value: DateTime)=>{
-    return value.toFormat('dd/MM/yyyy HH:mm:ss')
-  } })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize: (value: DateTime) => {
+      return value.toFormat('dd/MM/yyyy HH:mm:ss')
+    },
+  })
   public updatedAt: DateTime
 
   @beforeSave()
@@ -44,7 +59,10 @@ export default class User extends BaseModel {
 
   @hasOne(() => File, {
     foreignKey: 'ownerId',
-    onQuery: (query)=> query.where({fileCategory: 'avatar'})
+    onQuery: (query) => query.where({ fileCategory: 'avatar' }),
   })
   public avatar: HasOne<typeof File>
+
+  @hasMany(() => Post)
+  public posts: HasMany<typeof Post>
 }

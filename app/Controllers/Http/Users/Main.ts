@@ -3,19 +3,6 @@ import { User } from 'App/Models'
 import { UpdateValidator } from 'App/Validators/User/Main'
 
 export default class UsersController {
-  public async index({ request }: HttpContextContract) {
-    const user = User.query().where((builder) => {
-      if (request.qs().keyword) {
-        builder
-          .where('name', 'LIKE', `%${String(request.qs().keyword) || ''}%`)
-          .orWhere('email', 'LIKE', `%${String(request.qs().keyword) || ''}%`)
-          .orWhere('username', 'LIKE', `%${String(request.qs().keyword) || ''}%`)
-      }
-    })
-
-    return user
-  }
-
   public async show({ auth }: HttpContextContract) {
     const user = auth.user!
 

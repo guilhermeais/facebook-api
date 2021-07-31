@@ -12,7 +12,7 @@ export default class UserRegisterController {
       const { email, redirectUrl } = await request.validate(StoreValidator)
 
       const user = new User() // Aqui, vamos apenas instanciar o model User, e não criar direto
-      user.useTransaction(trx) // vamos usar a transaction criada 
+      user.useTransaction(trx) // vamos usar a transaction criada
       user.email = email // vamos colocar o email do request.body no usuário
 
       await user.save()
