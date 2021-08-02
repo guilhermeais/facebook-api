@@ -5,9 +5,11 @@ export default class StoreValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    email: schema.string({ trim: true }, [rules.email()]),
-    redirectUrl: schema.string({ trim: true }),
+    content: schema.string({ trim: true }),
+    postId: schema.number([rules.exists({ table: 'posts', column: 'id' })]),
   })
+
+  public cacheKey = this.ctx.routeKey
 
   public messages = {}
 }

@@ -10,7 +10,6 @@ export default class StoreValidator {
       rules.unique({ table: 'users', column: 'email' }),
     ]),
     redirectUrl: schema.string({ trim: true }),
-   
   })
 
   public messages = {}

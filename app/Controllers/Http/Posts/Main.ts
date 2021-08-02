@@ -12,7 +12,18 @@ export default class PostsCOntroller {
 
     await user.load('posts', (query) => {
       query.orderBy('id', 'desc')
+
+      query.withCount('comments')
+      query.preload('comments', (query) => {
+        query.select(['userId', 'id', 'content', 'createdAt'])
+        query.preload('user', (query) => {
+          query.select(['id', 'name', 'username'])
+          query.preload('avatar')
+        })
+      })
+
       query.preload('media')
+
       query.preload('user', (query) => {
         query.select(['id', 'name', 'username'])
         query.preload('avatar')
