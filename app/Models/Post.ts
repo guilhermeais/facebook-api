@@ -10,9 +10,7 @@ import {
   HasOne,
   hasOne,
 } from '@ioc:Adonis/Lucid/Orm'
-import User from './User'
-import File from './File'
-import Comment from './Comment'
+import { User, File, Comment, Reaction } from 'App/Models'
 
 export default class Post extends BaseModel {
   @column({ isPrimary: true })
@@ -45,5 +43,24 @@ export default class Post extends BaseModel {
   @computed()
   public get commentsCount() {
     return this.$extras.comments_count
+  }
+
+  @hasMany(() => Reaction, { serializeAs: null })
+  public reactions: HasMany<typeof Reaction>
+
+  @computed()
+  public get reactionsCount() {
+    return {
+      like: this.$extras.likeCount || 0,
+      love: this.$extras.loveCount || 0,
+      haha: this.$extras.hahaCount || 0,
+      sad: this.$extras.sadCount || 0,
+      angry: this.$extras.angryCount || 0,
+    }
+  }
+
+  @computed()
+  public get activeReaction() {
+    return this.reactions && this.reactions.length ? this.reactions[0].type : null
   }
 }

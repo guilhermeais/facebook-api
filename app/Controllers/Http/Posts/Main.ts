@@ -10,9 +10,11 @@ export default class PostsCOntroller {
 
     const user = (await User.findBy('username', username)) || auth.user!
 
+    console.log('usuário logado', auth.user!.id)
+
     await user.load('posts', (query) => {
       query.orderBy('id', 'desc')
-
+      // esse withCount, cria na model Post, o $extras.comments_count
       query.withCount('comments')
       query.preload('comments', (query) => {
         query.select(['userId', 'id', 'content', 'createdAt'])
@@ -22,11 +24,40 @@ export default class PostsCOntroller {
         })
       })
 
+      query.withCount('reactions', (query) => {
+        query.where('type', 'like')
+        query.as('likeCount')
+      })
+
+      query.withCount('reactions', (query) => {
+        query.where('type', 'love')
+        query.as('loveCount')
+      })
+
+      query.withCount('reactions', (query) => {
+        query.where('type', 'haha')
+        query.as('hahaCount')
+      })
+
+      query.withCount('reactions', (query) => {
+        query.where('type', 'sad')
+        query.as('sadCount')
+      })
+
+      query.withCount('reactions', (query) => {
+        query.where('type', 'angry')
+        query.as('angryCount')
+      })
+
       query.preload('media')
 
       query.preload('user', (query) => {
         query.select(['id', 'name', 'username'])
         query.preload('avatar')
+      })
+
+      query.preload('reactions', () => {
+        query.where('userId', auth.user!.id).first()
       })
     })
 
