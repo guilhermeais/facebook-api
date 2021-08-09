@@ -6,11 +6,11 @@ export default class FollowsController {
   public async index({ request, response, auth }: HttpContextContract) {
     const { username } = request.qs()
 
-    if (!username) {
-      return response.badRequest({ error: { message: 'missing username' } })
-    }
+    // if (!username) {
+    //   return response.badRequest({ error: { message: 'missing username' } })
+    // }
 
-    const user = await User.findByOrFail('username', username)
+    const user = (await User.findBy('username', username)) || auth.user!
 
     await user.load('following')
 
