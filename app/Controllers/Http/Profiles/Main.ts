@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { User } from 'App/Models'
+import { isFollowing } from 'App/utils/isFollowing'
 
 export default class ProfilesController {
   public async show({ request, auth }: HttpContextContract) {
@@ -14,13 +15,7 @@ export default class ProfilesController {
       .firstOrFail()
 
     if (user.id !== auth.user!.id) {
-      const isFollowing = await user
-        .related('followers')
-        .query()
-        .where('follower_id', auth.user!.id)
-        .first()
-
-      user.$extras.isFollowing = isFollowing ? true : false
+      await isFollowing(user, auth)
     }
 
     return user.serialize({
