@@ -10,8 +10,6 @@ export default class PostsCOntroller {
 
     const user = (await User.findBy('username', username)) || auth.user!
 
-    console.log('usuário logado', auth.user!.id)
-
     await user.load('posts', (query) => {
       query.orderBy('id', 'desc')
       // esse withCount, cria na model Post, o $extras.comments_count
@@ -56,8 +54,8 @@ export default class PostsCOntroller {
         query.preload('avatar')
       })
 
-      query.preload('reactions', () => {
-        query.where('userId', auth.user!.id).first()
+      query.preload('reactions', (query) => {
+        query.where({ userId: auth.user!.id })
       })
     })
 

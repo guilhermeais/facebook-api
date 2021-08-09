@@ -101,4 +101,9 @@ export default class User extends BaseModel {
   public get followingCount() {
     return this.$extras.following_count
   }
+
+  @computed()
+  public get isFollowing() {
+    return this.$extras.isFollowing
+  }
 }
