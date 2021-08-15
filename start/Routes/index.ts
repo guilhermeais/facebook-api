@@ -19,3 +19,4 @@ Route.get('/user-register', async ({ view }) => {
 })
 
 Route.on('/test').render('test')
+Route.on('/chat').render('chat')
