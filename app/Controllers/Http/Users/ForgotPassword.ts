@@ -14,19 +14,18 @@ export default class UserForgotPasswordController {
       const user = await User.findByOrFail('email', email)
       user.useTransaction(trx)
 
-     
       const key = faker.datatype.uuid() + user.id
 
-      user.merge({rememberMeToken: key})
+      user.merge({ rememberMeToken: key })
       await user.save()
-      
+
       user.related('keys').create({ key })
 
       const link = `${redirectUrl.replace(/\/$/, '')}/${key}`
       console.log(redirectUrl)
       console.log(link)
       await Mail.send((message) => {
-        message.to(email) 
+        message.to(email)
         message.from('contato@facebook.com', 'Facebook')
         message.subject('Recuperação de senha')
         message.htmlView('emails/forgot-password-email', { link })
@@ -47,9 +46,7 @@ export default class UserForgotPasswordController {
     const userKey = await UserKey.findByOrFail('key', key)
     const user = await userKey.related('user').query().firstOrFail()
 
-    
-
-    user.merge({  password })
+    user.merge({ password })
 
     await user.save()
 

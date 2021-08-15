@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { UserKey, File, Post } from 'App/Models'
+import { UserKey, File, Post, Comment, Conversation } from 'App/Models'
 import {
   column,
   beforeSave,
@@ -13,7 +13,6 @@ import {
   ManyToMany,
   computed,
 } from '@ioc:Adonis/Lucid/Orm'
-import Comment from './Comment'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -86,6 +85,9 @@ export default class User extends BaseModel {
     pivotRelatedForeignKey: 'following_id',
   })
   public following: ManyToMany<typeof User>
+
+  // @hasMany(() => Conversation)
+  // public conversations: HasMany<typeof Conversation>
 
   @computed()
   public get postsCount() {
