@@ -15,6 +15,9 @@
       "App/*": [
         "./app/*"
       ],
+      "Test/*": [
+        "./test/*"
+      ],
       "Config/*": [
         "./config/*"
       ],
