@@ -8,7 +8,7 @@ export default class PostsCOntroller {
   public async index({ request, auth }: HttpContextContract) {
     const { username } = request.qs()
 
-    const user = (await User.findBy('username', username)) || auth.user!
+    const user = (await User.findBy('username', username || '')) || auth.user!
 
     await user.load('posts', (query) => {
       query.orderBy('id', 'desc')
